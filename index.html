@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FORTY EIGHT — World Cup 2026 Fan Concept &amp; Tournament Simulator</title>
+  <meta name="description" content="An immersive 3D fan concept for the 2026 World Cup across the USA, Mexico and Canada — 48 teams, 104 matches, and a full tournament simulator. Unofficial fan project, not affiliated with FIFA." />
+  <meta name="theme-color" content="#07080F" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="FORTY EIGHT — World Cup 2026 Fan Concept" />
+  <meta property="og:description" content="Immersive 3D concept site with a working 48-team tournament simulator. Unofficial fan project." />
+  <meta property="og:image" content="/assets/hero-stadium.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Preloader -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <svg class="preloader__ball" viewBox="-110 -110 220 220" width="160" height="160" aria-hidden="true">
+        <defs>
+          <linearGradient id="plgold" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#F4D58D"/><stop offset="0.6" stop-color="#C9962E"/><stop offset="1" stop-color="#8C6420"/>
+          </linearGradient>
+        </defs>
+        <circle class="preloader__ring" cx="0" cy="0" r="96" fill="none" stroke="rgba(244,213,141,0.16)" stroke-width="1.5"/>
+        <g id="preloader-panels"></g>
+      </svg>
+      <div class="preloader__meta">
+        <span class="preloader__label">Assembling the stage</span>
+        <span class="preloader__pct" id="preloader-pct">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed chrome -->
+  <div class="progress-bar" id="progress-bar" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <div class="cursor__dot"></div>
+    <div class="cursor__ring"></div>
+  </div>
+
+  <header class="nav" id="nav">
+    <a class="nav__logo" href="#hero" data-cursor>
+      <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true"><use href="#mark"/></svg>
+      <span>FORTY<b>EIGHT</b></span>
+    </a>
+    <nav class="nav__links" aria-label="Sections">
+      <a href="#hosts" data-cursor>Hosts</a>
+      <a href="#teams" data-cursor>Teams</a>
+      <a href="#simulator" data-cursor>Simulator</a>
+      <a href="#atmosphere" data-cursor>Atmosphere</a>
+    </nav>
+    <a class="nav__cta" href="#simulator" data-cursor>Run simulation</a>
+  </header>
+
+  <main id="main">
+    <!-- 1 · HERO -->
+    <section class="hero" id="hero">
+      <div class="hero__backdrop" aria-hidden="true">
+        <img src="/assets/hero-stadium.png" alt="" fetchpriority="high" />
+        <div class="hero__shade"></div>
+      </div>
+      <canvas class="hero__canvas" id="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero__content container">
+        <p class="hero__kicker" data-kicker>
+          <span class="kicker-line"></span>United States · Mexico · Canada — Summer 2026
+        </p>
+        <h1 class="hero__title" id="hero-title" aria-label="The world watches">
+          <span class="hero__line" data-line="THE WORLD"></span>
+          <span class="hero__line hero__line--gold" data-line="WATCHES"></span>
+        </h1>
+        <p class="hero__sub">
+          Forty-eight nations. One hundred and four matches. Three countries under the same
+          floodlights. An unofficial fan concept built for the biggest tournament ever staged.
+        </p>
+        <div class="hero__countdown" id="countdown" role="timer" aria-label="Countdown to kick-off">
+          <div class="chip"><span class="chip__num" data-cd="d">00</span><span class="chip__lbl">Days</span></div>
+          <div class="chip"><span class="chip__num" data-cd="h">00</span><span class="chip__lbl">Hours</span></div>
+          <div class="chip"><span class="chip__num" data-cd="m">00</span><span class="chip__lbl">Minutes</span></div>
+          <div class="chip"><span class="chip__num" data-cd="s">00</span><span class="chip__lbl">Seconds</span></div>
+          <div class="hero__kickoff">Kick-off · Estadio Azteca · June 11, 2026</div>
+        </div>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="#simulator" data-magnetic data-cursor>
+            <span>Run simulation</span><span class="btn__icon" data-icon="play"></span>
+          </a>
+          <a class="btn btn--ghost" href="#teams" data-magnetic data-cursor>
+            <span>Explore teams</span><span class="btn__icon" data-icon="arrow-right"></span>
+          </a>
+        </div>
+      </div>
+      <div class="hero__scrollcue" aria-hidden="true"><span data-icon="chevron-down"></span></div>
+    </section>
+
+    <!-- 2 · HOST NATIONS -->
+    <section class="hosts" id="hosts">
+      <div class="hosts__pin" id="hosts-pin">
+        <header class="section-head container">
+          <p class="section-head__eyebrow"><span data-icon="map-pin"></span>Three nations, one stage</p>
+          <h2 class="section-head__title" data-reveal>HOST <em>NATIONS</em></h2>
+        </header>
+        <div class="hosts__track" id="hosts-track"><!-- cards injected --></div>
+      </div>
+    </section>
+
+    <!-- 3 · TEAMS -->
+    <section class="teams" id="teams">
+      <header class="section-head container">
+        <p class="section-head__eyebrow"><span data-icon="users"></span>The qualified field</p>
+        <h2 class="section-head__title" data-reveal>FORTY-EIGHT <em>CONTENDERS</em></h2>
+        <p class="section-head__sub">
+          Every nation in the projected 2026 field, rated for the simulator. Featured stars
+          carry official artwork — the rest receive the concept card treatment until their
+          portraits arrive.
+        </p>
+      </header>
+      <div class="teams__featured container" id="teams-featured"></div>
+      <div class="teams__grid container" id="teams-grid"></div>
+    </section>
+
+    <!-- 4 · SIMULATOR -->
+    <section class="sim" id="simulator">
+      <header class="section-head container">
+        <p class="section-head__eyebrow"><span data-icon="trophy"></span>The centerpiece</p>
+        <h2 class="section-head__title" data-reveal>TOURNAMENT <em>SIMULATOR</em></h2>
+        <p class="section-head__sub">
+          Twelve groups, a 32-team knockout, goals drawn from Poisson distributions seeded by
+          each side's rating. Run the whole summer in seconds — or step through it round by round.
+        </p>
+      </header>
+      <div class="sim__controls container" id="sim-controls">
+        <button class="btn btn--primary" id="sim-run" data-magnetic data-cursor>
+          <span>Run full simulation</span><span class="btn__icon" data-icon="shuffle"></span>
+        </button>
+        <button class="btn btn--ghost" id="sim-step" data-magnetic data-cursor>
+          <span>Step through rounds</span><span class="btn__icon" data-icon="chevrons-right"></span>
+        </button>
+        <button class="btn btn--ghost btn--compact is-hidden" id="sim-next" data-cursor>
+          <span>Next round</span><span class="btn__icon" data-icon="chevron-right"></span>
+        </button>
+        <button class="btn btn--ghost btn--compact is-hidden" id="sim-rerun" data-cursor>
+          <span>Re-run</span><span class="btn__icon" data-icon="rotate-ccw"></span>
+        </button>
+      </div>
+      <ol class="sim__stages container" id="sim-stages" aria-label="Tournament progress">
+        <li data-stage="groups">Groups</li>
+        <li data-stage="r32">Round of 32</li>
+        <li data-stage="r16">Round of 16</li>
+        <li data-stage="qf">Quarter-finals</li>
+        <li data-stage="sf">Semi-finals</li>
+        <li data-stage="final">Final</li>
+      </ol>
+      <div class="sim__board container">
+        <div class="sim__placeholder" id="sim-placeholder">
+          <span data-icon="play"></span>
+          <p>The draw is set. Run the tournament to fill the boards.</p>
+        </div>
+        <div class="sim__groups is-hidden" id="sim-groups"></div>
+        <div class="sim__bracket-wrap is-hidden" id="sim-bracket-wrap">
+          <div class="sim__bracket" id="sim-bracket"></div>
+        </div>
+        <div class="sim__champion is-hidden" id="sim-champion">
+          <canvas id="trophy-canvas" aria-hidden="true"></canvas>
+          <div class="sim__champion-info" id="sim-champion-info"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 · ATMOSPHERE -->
+    <section class="atmo" id="atmosphere">
+      <canvas class="atmo__canvas" id="stadium-canvas" aria-hidden="true"></canvas>
+      <div class="atmo__overlay container">
+        <header class="section-head">
+          <p class="section-head__eyebrow"><span data-icon="sparkles"></span>Inside the bowl</p>
+          <h2 class="section-head__title" data-reveal>THE <em>ATMOSPHERE</em></h2>
+        </header>
+        <div class="atmo__stats" id="atmo-stats">
+          <div class="stat" data-count="48"><span class="stat__icon" data-icon="users"></span><span class="stat__num">0</span><span class="stat__lbl">Teams</span></div>
+          <div class="stat" data-count="104"><span class="stat__icon" data-icon="calendar"></span><span class="stat__num">0</span><span class="stat__lbl">Matches</span></div>
+          <div class="stat" data-count="16"><span class="stat__icon" data-icon="map-pin"></span><span class="stat__num">0</span><span class="stat__lbl">Host cities</span></div>
+          <div class="stat" data-count="39"><span class="stat__icon" data-icon="globe"></span><span class="stat__num">0</span><span class="stat__lbl">Days of football</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 · FOOTER -->
+    <footer class="footer" id="footer">
+      <div class="footer__divider" aria-hidden="true"></div>
+      <div class="container footer__inner">
+        <a class="nav__logo" href="#hero" data-cursor>
+          <svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><use href="#mark"/></svg>
+          <span>FORTY<b>EIGHT</b></span>
+        </a>
+        <p class="footer__legal">
+          Unofficial fan concept — not affiliated with, endorsed by, or connected to FIFA or any
+          federation. Team and player references are editorial. Built for the love of the game.
+        </p>
+        <div class="footer__socials">
+          <a href="#" aria-label="GitHub" data-cursor><span data-icon="github"></span></a>
+          <a href="#" aria-label="Instagram" data-cursor><span data-icon="instagram"></span></a>
+          <a href="#" aria-label="YouTube" data-cursor><span data-icon="youtube"></span></a>
+          <a href="#" aria-label="Website" data-cursor><span data-icon="globe"></span></a>
+        </div>
+        <p class="footer__fineprint">FORTY EIGHT © 2026 · A concept by a fan, for the fans</p>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Shared logo mark -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <g id="mark">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="url(#markg)" stroke-width="3"/>
+        <path d="M32 20 L43 28 L39 41 L25 41 L21 28 Z" fill="none" stroke="url(#markg)" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M32 20 L32 9 M43 28 L54 24 M39 41 L46 52 M25 41 L18 52 M21 28 L10 24" stroke="url(#markg)" stroke-width="3" stroke-linecap="round"/>
+        <linearGradient id="markg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#F4D58D"/><stop offset="1" stop-color="#8C6420"/>
+        </linearGradient>
+      </g>
+    </defs>
+  </svg>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
