@@ -1,0 +1,116 @@
+/* ============================================================
+   Team / player card component (image + procedural fallback)
+   ============================================================ */
+.tcard {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background:
+    radial-gradient(140% 110% at 80% -10%, rgba(201, 150, 46, 0.1), transparent 50%),
+    linear-gradient(165deg, #0E1422 0%, #090C16 70%);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  aspect-ratio: 2 / 3;
+  display: flex; flex-direction: column;
+  transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), border-color 0.4s;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+}
+.tcard:hover {
+  --lift: -8px;
+  border-color: rgba(244, 213, 141, 0.3);
+  box-shadow: var(--shadow-card);
+}
+.tcard--featured { aspect-ratio: 3 / 3.55; }
+
+.tcard__tag {
+  position: absolute; top: 16px; left: 16px; z-index: 5;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.26em; text-transform: uppercase;
+  color: #14100A;
+  background: var(--gold-grad);
+  padding: 7px 13px;
+  border-radius: 999px;
+  box-shadow: 0 6px 20px rgba(201, 150, 46, 0.45);
+}
+.tcard__tag svg { width: 11px; height: 11px; stroke: #14100A; }
+
+/* media (real artwork) variant */
+.tcard__media { position: absolute; inset: 0; }
+.tcard__media img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform 0.8s var(--ease-out); }
+.tcard:hover .tcard__media img { transform: scale(1.045); }
+.tcard__media::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(185deg, transparent 38%, rgba(7, 8, 15, 0.55) 64%, rgba(7, 8, 15, 0.97) 100%);
+}
+
+/* procedural fallback variant */
+.tcard__canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.85; }
+.tcard__silhouette {
+  position: absolute; inset: 12% 0 18%;
+  display: grid; place-items: center;
+  z-index: 2;
+}
+.tcard__silhouette svg { width: 78%; height: 100%; overflow: visible; opacity: 0.92; }
+.tcard__bignum {
+  position: absolute; top: 1%; right: 5%; z-index: 1;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(108px, 11vw, 190px); line-height: 1;
+  letter-spacing: -0.04em;
+  background: linear-gradient(165deg, rgba(244, 213, 141, 0.5), rgba(201, 150, 46, 0.22) 55%, rgba(140, 100, 32, 0.06));
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  user-select: none;
+}
+.tcard--featured .tcard__bignum { font-size: clamp(170px, 18vw, 280px); }
+.tcard__sheen {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(115deg, transparent 42%, rgba(244, 213, 141, 0.06) 50%, transparent 58%);
+  background-size: 240% 100%;
+  background-position: 110% 0;
+  transition: background-position 1.1s var(--ease-out);
+}
+.tcard:hover .tcard__sheen { background-position: -55% 0; }
+
+/* shared footer block */
+.tcard__info { position: relative; z-index: 4; margin-top: auto; padding: 16px; display: grid; gap: 10px; }
+.tcard__id { display: flex; align-items: center; gap: 10px; }
+.tcard__id .flag { width: 27px; height: 18px; border-radius: 3px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45); flex-shrink: 0; }
+.tcard__names { display: grid; line-height: 1.18; min-width: 0; }
+.tcard__player {
+  font-family: var(--font-display); font-weight: 600; font-size: 16.5px;
+  letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tcard--featured .tcard__player { font-size: 23px; }
+.tcard__nation { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-2); }
+.tcard__num-chip {
+  margin-left: auto;
+  font-family: var(--font-display); font-weight: 600; font-size: 15px;
+  color: var(--gold-1);
+  border: 1px solid rgba(201, 150, 46, 0.4);
+  border-radius: 9px;
+  padding: 3px 9px;
+  flex-shrink: 0;
+}
+
+/* rating bars */
+.tcard__ratings { display: grid; gap: 6px; }
+.rating { display: grid; grid-template-columns: 30px 1fr 26px; align-items: center; gap: 9px; font-size: 10px; letter-spacing: 0.14em; color: var(--ink-dim); }
+.rating b { color: var(--ink-body); font-weight: 600; font-size: 11px; text-align: right; font-variant-numeric: tabular-nums; }
+.rating__bar { height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+.rating__fill {
+  height: 100%; width: 0%;
+  border-radius: 2px;
+  background: var(--gold-grad-h);
+  box-shadow: 0 0 8px rgba(201, 150, 46, 0.6);
+}
+.rating--ovr .rating__fill { background: linear-gradient(90deg, var(--teal), #2EAE92); box-shadow: 0 0 8px rgba(79, 227, 193, 0.5); }
+
+/* flags */
+.flag { display: block; object-fit: cover; }
+.flag svg { width: 100%; height: 100%; display: block; }
+
+/* shootout overlay strip inside champion / final ties */
+.shootout {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal);
+}
