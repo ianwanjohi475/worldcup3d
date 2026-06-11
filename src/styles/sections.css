@@ -78,6 +78,19 @@
 }
 .hero__cta { display: flex; gap: 18px; flex-wrap: wrap; }
 
+.hero__ballhint {
+  position: absolute; right: clamp(20px, 5vw, 64px); bottom: 88px;
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim);
+  padding: 10px 16px; border-radius: 999px;
+  background: rgba(7, 8, 15, 0.5);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  animation: cue-float 2.6s ease-in-out infinite;
+}
+.hero__ballhint svg { width: 14px; height: 14px; stroke: var(--gold-2); }
+@media (max-width: 900px) { .hero__ballhint { display: none; } }
+
 .hero__scrollcue {
   position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%);
   color: var(--gold-2);
@@ -140,6 +153,55 @@
 @media (max-width: 900px) {
   .hosts__track { flex-direction: column; width: auto; padding-inline: 24px; }
   .host-card { width: 100%; aspect-ratio: 4 / 3.4; }
+}
+
+/* ---------- INTERACTIVE GLOBE ---------- */
+.globe {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: center;
+  gap: 24px;
+  min-height: 100svh;
+  padding: clamp(64px, 9vw, 120px) 0;
+  overflow: clip;
+}
+.globe__stage { position: relative; height: min(78svh, 720px); }
+.globe__canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+.globe__tip {
+  position: absolute; z-index: 5; pointer-events: none;
+  transform: translate(14px, -50%);
+  background: rgba(7, 8, 15, 0.86);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 9px 13px;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  opacity: 0; transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.globe__tip.is-on { opacity: 1; }
+.globe__tip b { display: block; font-family: var(--font-display); font-size: 15px; letter-spacing: 0.04em; color: var(--ink); text-transform: uppercase; }
+.globe__tip span { font-size: 11.5px; color: var(--gold-1); }
+.globe__copy { padding-right: clamp(24px, 5vw, 80px); }
+.globe__copy .section-head__title { font-size: clamp(34px, 4.4vw, 66px); }
+.globe__legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.globe__chip {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 12.5px; font-weight: 500; letter-spacing: 0.06em; color: var(--ink-body);
+  padding: 9px 15px; border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.3s, color 0.3s, transform 0.3s var(--ease-out), background 0.3s;
+}
+.globe__chip .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold-1); box-shadow: 0 0 10px rgba(244, 213, 141, 0.8); }
+.globe__chip--host .dot { background: var(--teal); box-shadow: 0 0 10px rgba(79, 227, 193, 0.8); }
+.globe__chip:hover { color: var(--ink); border-color: rgba(244, 213, 141, 0.4); background: rgba(201, 150, 46, 0.08); transform: translateY(-2px); }
+.globe__hint { display: inline-flex; align-items: center; gap: 9px; margin-top: 22px; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-dim); }
+.globe__hint svg { width: 14px; height: 14px; stroke: var(--gold-2); }
+
+@media (max-width: 900px) {
+  .globe { grid-template-columns: 1fr; min-height: auto; }
+  .globe__stage { height: 58svh; order: -1; }
+  .globe__copy { padding-right: 0; }
 }
 
 /* ---------- TEAMS ---------- */

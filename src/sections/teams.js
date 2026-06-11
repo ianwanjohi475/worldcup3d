@@ -153,17 +153,24 @@ export async function createTeamCard(team, { featured = false } = {}) {
   const hasArt = await imageExists(src);
 
   const card = el(`
-    <article class="tcard ${featured ? 'tcard--featured' : ''}" data-tilt data-cursor>
+    <article class="tcard ${featured ? 'tcard--featured' : ''}" id="team-${team.id}" data-tilt data-cursor>
       ${featured ? `<span class="tcard__tag">${icon('star', { size: 11 })}Featured</span>` : ''}
     </article>
   `);
 
   if (hasArt) {
     card.insertAdjacentHTML('beforeend', `
-      <div class="tcard__media"><img src="${src}" alt="${team.star.name} artwork" loading="lazy" /></div>
+      <div class="tcard__media"><img src="${src}" alt="${team.star.name} poster" loading="lazy" /></div>
+      <div class="tcard__holo" aria-hidden="true"></div>
       <div class="tcard__sheen"></div>
       ${infoHTML(team)}
     `);
+    const holo = card.querySelector('.tcard__holo');
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      holo.style.setProperty('--hx', `${((e.clientX - r.left) / r.width) * 100}%`);
+      holo.style.setProperty('--hy', `${((e.clientY - r.top) / r.height) * 100}%`);
+    });
   } else {
     card.insertAdjacentHTML('beforeend', `
       <canvas class="tcard__canvas" aria-hidden="true"></canvas>
