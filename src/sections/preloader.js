@@ -1,5 +1,5 @@
 import { gsap } from 'gsap';
-import { prefersReducedMotion } from '../lib/utils.js';
+import { prefersReducedMotion, asset } from '../lib/utils.js';
 
 /**
  * Percentage ticker + the ball assembling from gold panels (SVG),
@@ -41,12 +41,12 @@ export function runPreloader() {
 
     /* preload the heavyweight images while the ticker runs */
     const sources = [
-      '/assets/hero-stadium.png',
-      '/assets/hero-ball-texture.png',
-      '/assets/host-usa.png',
-      '/assets/host-mexico.png',
-      '/assets/host-canada.png',
-    ];
+      'assets/hero-stadium.png',
+      'assets/hero-ball-texture.png',
+      'assets/host-usa.png',
+      'assets/host-mexico.png',
+      'assets/host-canada.png',
+    ].map(asset);
     let loaded = 0;
     let real = 0;
     sources.forEach((src) => {

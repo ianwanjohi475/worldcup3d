@@ -2,7 +2,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { HOSTS } from '../data/teams.js';
 import { icon } from '../lib/icons.js';
-import { el, isMobile, prefersReducedMotion } from '../lib/utils.js';
+import { el, isMobile, prefersReducedMotion, asset } from '../lib/utils.js';
 
 /** GSAP horizontally-pinned host nation cards (stacked on mobile). */
 export function initHosts() {
@@ -12,7 +12,7 @@ export function initHosts() {
   for (const host of HOSTS) {
     track.appendChild(el(`
       <article class="host-card" data-host="${host.id}">
-        <div class="host-card__media"><img src="${host.img}" alt="${host.name} host stadium artwork" loading="lazy" /></div>
+        <div class="host-card__media"><img src="${asset(host.img)}" alt="${host.name} host stadium artwork" loading="lazy" /></div>
         <div class="host-card__veil"></div>
         <span class="host-card__tag">${icon('map-pin', { size: 13 })}${host.tag}</span>
         <div class="host-card__body">

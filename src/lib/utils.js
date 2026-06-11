@@ -1,6 +1,9 @@
 export const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/** Resolve a public asset path against Vite's base (works at site sub-paths). */
+export const asset = (p) => import.meta.env.BASE_URL + p.replace(/^\//, '');
+
 export const isMobile = () =>
   window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
 
