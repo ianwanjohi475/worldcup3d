@@ -3,7 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TEAMS } from '../data/teams.js';
 import { flagSVG } from '../lib/flags.js';
 import { icon } from '../lib/icons.js';
-import { el, imageExists, prefersReducedMotion, isMobile } from '../lib/utils.js';
+import { el, imageExists, prefersReducedMotion, isMobile, asset } from '../lib/utils.js';
 import { initTilt } from '../lib/cursor.js';
 
 /* ------------------------------------------------------------------ */
@@ -149,7 +149,7 @@ const infoHTML = (team) => `
   </div>`;
 
 export async function createTeamCard(team, { featured = false } = {}) {
-  const src = `/assets/player-${team.star.img}.png`;
+  const src = asset(`assets/player-${team.star.img}.png`);
   const hasArt = await imageExists(src);
 
   const card = el(`

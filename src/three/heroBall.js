@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { createRenderer, gradientEnv, autoResize, emberField, disposeObject } from './engine.js';
-import { visibilityLoop, isMobile, prefersReducedMotion, lerp } from '../lib/utils.js';
+import { visibilityLoop, isMobile, prefersReducedMotion, lerp, asset } from '../lib/utils.js';
 
 /**
  * Hero scene: the textured match ball, floating in a gold ember field
@@ -49,7 +49,7 @@ export function initHeroBall(canvas) {
   });
   ballGroup.add(new THREE.Mesh(haloGeo, haloMat));
 
-  new THREE.TextureLoader().load('/assets/hero-ball-texture.png', (tex) => {
+  new THREE.TextureLoader().load(asset('assets/hero-ball-texture.png'), (tex) => {
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
     tex.repeat.set(2, 1);
