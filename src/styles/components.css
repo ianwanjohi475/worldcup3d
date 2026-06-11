@@ -70,6 +70,26 @@
 }
 .tcard:hover .tcard__sheen { background-position: -55% 0; }
 
+/* holographic foil that tracks the cursor (image cards) */
+.tcard__holo {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  opacity: 0; transition: opacity 0.4s var(--ease-out);
+  mix-blend-mode: color-dodge;
+  background:
+    radial-gradient(220px circle at var(--hx, 50%) var(--hy, 0%), rgba(244, 213, 141, 0.5), transparent 60%),
+    repeating-linear-gradient(115deg, rgba(79, 227, 193, 0.06) 0 6px, transparent 6px 14px, rgba(244, 213, 141, 0.06) 14px 20px);
+  background-blend-mode: screen;
+}
+.tcard:hover .tcard__holo { opacity: 0.55; }
+
+/* pulse when targeted from the globe */
+@keyframes card-target {
+  0% { box-shadow: 0 0 0 0 rgba(244, 213, 141, 0); }
+  30% { box-shadow: 0 0 0 3px rgba(244, 213, 141, 0.9), var(--shadow-card); }
+  100% { box-shadow: 0 0 0 0 rgba(244, 213, 141, 0); }
+}
+.tcard.is-targeted { animation: card-target 1.6s var(--ease-out); }
+
 /* shared footer block */
 .tcard__info { position: relative; z-index: 4; margin-top: auto; padding: 16px; display: grid; gap: 10px; }
 .tcard__id { display: flex; align-items: center; gap: 10px; }

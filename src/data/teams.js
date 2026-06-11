@@ -74,6 +74,24 @@ export const GROUPS = 'ABCDEFGHIJKL'.split('').map((letter) => ({
 
 export const byId = Object.fromEntries(TEAMS.map((t) => [t.id, t]));
 
+/* approximate [lat, lng] per nation for the interactive globe */
+export const LATLNG = {
+  mex: [23.6, -102.5], sui: [46.8, 8.2], egy: [26.8, 30.8], nzl: [-40.9, 174.9],
+  can: [56.1, -106.3], cro: [45.1, 15.2], civ: [7.5, -5.5], qat: [25.3, 51.2],
+  bra: [-14.2, -51.9], aut: [47.5, 14.6], tun: [33.9, 9.5], jor: [30.6, 36.2],
+  usa: [37.1, -95.7], ita: [41.9, 12.6], alg: [28.0, 1.7], cuw: [12.2, -69.0],
+  esp: [40.5, -3.7], uru: [-32.5, -55.8], gha: [7.9, -1.0], irq: [33.2, 43.7],
+  fra: [46.2, 2.2], kor: [35.9, 127.8], sco: [56.5, -4.2], cpv: [16.0, -24.0],
+  eng: [52.4, -1.5], ecu: [-1.8, -78.2], nor: [60.5, 8.5], hai: [18.9, -72.3],
+  arg: [-38.4, -63.6], den: [56.3, 9.5], rsa: [-30.6, 22.9], uzb: [41.4, 64.6],
+  por: [39.4, -8.2], col: [4.6, -74.3], tur: [39.0, 35.2], pan: [8.5, -80.8],
+  ned: [52.1, 5.3], jpn: [36.2, 138.3], pol: [51.9, 19.1], cod: [-4.0, 21.8],
+  ger: [51.2, 10.4], mar: [31.8, -7.1], aus: [-25.3, 133.8], ksa: [23.9, 45.1],
+  bel: [50.5, 4.5], sen: [14.5, -14.5], irn: [32.4, 53.7], par: [-23.4, -58.4],
+};
+
+export const HOST_IDS = ['usa', 'mex', 'can'];
+
 export const HOSTS = [
   {
     id: 'usa', name: 'United States', img: '/assets/host-usa.png',

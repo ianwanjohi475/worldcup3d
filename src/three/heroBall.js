@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createRenderer, gradientEnv, autoResize, emberField, disposeObject } from './engine.js';
+import { createRenderer, gradientEnv, autoResize, emberField, disposeObject, glowTexture } from './engine.js';
 import { visibilityLoop, isMobile, prefersReducedMotion, lerp, asset } from '../lib/utils.js';
 
 /**
@@ -122,27 +122,122 @@ export function initHeroBall(canvas) {
   layout();
   window.addEventListener('resize', layout);
 
-  /* ---- pointer parallax ---- */
+  /* ---- shockwave ring (fired on kick) ---- */
+  const ringGeo = new THREE.RingGeometry(1.3, 1.42, 64);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: 0xF4D58D, transparent: true, opacity: 0, side: THREE.DoubleSide,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ballGroup.add(ring);
+  let ringT = -1;
+
+  /* ---- kick ember burst ---- */
+  const burstN = mobile ? 70 : 150;
+  const burstGeo = new THREE.BufferGeometry();
+  const burstPos = new Float32Array(burstN * 3);
+  burstGeo.setAttribute('position', new THREE.BufferAttribute(burstPos, 3));
+  const burstMat = new THREE.PointsMaterial({
+    size: 0.06, map: glowTexture(), color: 0xF4D58D, transparent: true, opacity: 0,
+    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+  });
+  const burst = new THREE.Points(burstGeo, burstMat);
+  ballGroup.add(burst);
+  const burstVel = Array.from({ length: burstN }, () => new THREE.Vector3());
+  let burstT = -1;
+
+  /* ---- pointer parallax + drag-to-spin + click-to-kick ---- */
   let tx = 0, ty = 0, px = 0, py = 0;
-  const onPointer = (e) => {
-    const nx = (e.clientX / window.innerWidth) * 2 - 1;
-    const ny = (e.clientY / window.innerHeight) * 2 - 1;
-    tx = nx; ty = ny;
+  let spinV = 0, spinX = 0;            // user-imparted angular velocity (inertia)
+  let dragging = false, moved = false, lastX = 0, lastY = 0;
+  const rayc = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+
+  const overBall = (e) => {
+    const r = canvas.getBoundingClientRect();
+    ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+    ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    rayc.setFromCamera(ndc, camera);
+    return rayc.intersectObject(ball).length > 0;
   };
-  if (!mobile && !reduced) window.addEventListener('pointermove', onPointer, { passive: true });
+  const kick = () => {
+    spinV += (Math.random() < 0.5 ? -1 : 1) * 0.42 + 0.3;
+    spinX += (Math.random() - 0.5) * 0.5;
+    ballGroup.position.y += 0.18;
+    ringT = 0; burstT = 0;
+    for (let i = 0; i < burstN; i++) {
+      const a = Math.random() * Math.PI * 2, e = Math.acos(2 * Math.random() - 1);
+      const sp = 1.6 + Math.random() * 2.4;
+      burstVel[i].set(Math.sin(e) * Math.cos(a), Math.cos(e), Math.sin(e) * Math.sin(a)).multiplyScalar(sp);
+      burstPos[i * 3] = burstPos[i * 3 + 1] = burstPos[i * 3 + 2] = 0;
+    }
+    burstGeo.attributes.position.needsUpdate = true;
+  };
+  const onPointer = (e) => {
+    tx = (e.clientX / window.innerWidth) * 2 - 1;
+    ty = (e.clientY / window.innerHeight) * 2 - 1;
+    if (dragging) {
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+      spinV = dx * 0.01;
+      spinX = dy * 0.008;
+      ball.rotation.y += spinV;
+      ball.rotation.x += spinX;
+      lastX = e.clientX; lastY = e.clientY;
+    } else {
+      canvas.style.cursor = overBall(e) ? 'grab' : 'default';
+    }
+  };
+  const onDown = (e) => { if (overBall(e)) { dragging = true; moved = false; lastX = e.clientX; lastY = e.clientY; canvas.style.cursor = 'grabbing'; } };
+  const onUp = (e) => {
+    if (dragging && !moved) kick();
+    dragging = false;
+    canvas.style.cursor = overBall(e) ? 'grab' : 'default';
+  };
+  if (!reduced) {
+    window.addEventListener('pointermove', onPointer, { passive: true });
+    canvas.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointerup', onUp);
+  }
 
   const stopResize = autoResize(renderer, camera, canvas);
 
   const loop = visibilityLoop(canvas, (dt, t) => {
     if (!reduced) {
-      ball.rotation.y += dt * 0.16;
-      ball.rotation.x = Math.sin(t * 0.18) * 0.06;
-      ballGroup.position.y = Math.sin(t * 0.55) * 0.07;
+      if (!dragging) {
+        ball.rotation.y += dt * 0.16 + spinV;
+        ball.rotation.x += spinX;
+        spinV *= 0.95;                 // inertia decay
+        spinX *= 0.92;
+      }
+      ball.rotation.x += (Math.sin(t * 0.18) * 0.06 - ball.rotation.x) * 0.005;
+      ballGroup.position.y += (Math.sin(t * 0.55) * 0.07 - ballGroup.position.y) * 0.1;
       px = lerp(px, tx, 0.045);
       py = lerp(py, ty, 0.045);
       group.rotation.y = px * 0.14;
       group.rotation.x = py * 0.1;
       embers.update(dt, t);
+
+      if (ringT >= 0) {
+        ringT += dt * 1.6;
+        const s = 1 + ringT * 1.5;
+        ring.scale.setScalar(s);
+        ringMat.opacity = Math.max(0, 0.7 * (1 - ringT));
+        if (ringT >= 1) ringT = -1;
+      }
+      if (burstT >= 0) {
+        burstT += dt;
+        const p = burstGeo.attributes.position.array;
+        for (let i = 0; i < burstN; i++) {
+          p[i * 3] += burstVel[i].x * dt;
+          p[i * 3 + 1] += burstVel[i].y * dt;
+          p[i * 3 + 2] += burstVel[i].z * dt;
+          burstVel[i].multiplyScalar(0.94);
+        }
+        burstGeo.attributes.position.needsUpdate = true;
+        burstMat.opacity = Math.max(0, 1 - burstT / 1.1);
+        if (burstT >= 1.1) burstT = -1;
+      }
     }
     renderer.render(scene, camera);
   });
@@ -158,6 +253,8 @@ export function initHeroBall(canvas) {
       stopResize();
       window.removeEventListener('resize', layout);
       window.removeEventListener('pointermove', onPointer);
+      canvas.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointerup', onUp);
       disposeObject(scene);
       env.dispose();
       renderer.dispose();
