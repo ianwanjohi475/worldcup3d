@@ -5,6 +5,7 @@ import { Logo, myCompSchema2 } from "./HelloWorld/Logo";
 import { Cr7Explainer, CR7_DURATION } from "./worldcup/Cr7Explainer";
 import { Cr7Reel } from "./worldcup/Cr7Reel";
 import { reelDurationInFrames } from "./worldcup/reel.config";
+import { UiShowcase, UI_DURATION } from "./uikit/UiShowcase";
 
 // Each <Composition> is an entry in the sidebar!
 
@@ -23,6 +24,14 @@ export const RemotionRoot: React.FC = () => {
         id="Cr7Reel"
         component={Cr7Reel}
         durationInFrames={reelDurationInFrames()}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="UiShowcase"
+        component={UiShowcase}
+        durationInFrames={UI_DURATION}
         fps={30}
         width={1080}
         height={1920}
