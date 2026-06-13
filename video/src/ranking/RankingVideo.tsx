@@ -67,7 +67,7 @@ export const RankingVideo: React.FC = () => {
 
       {/* Big intro title */}
       <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", flexDirection: "column", opacity: introOut, padding: 70 }}>
-        <div style={{ fontSize: 40, letterSpacing: 8, color: GOLD, fontWeight: 800 }}>TOP 10</div>
+        <div style={{ fontSize: 40, letterSpacing: 8, color: GOLD, fontWeight: 800 }}>{RANKING.kicker}</div>
         <div style={{ fontSize: 120, fontWeight: 900, color: "#fff", textAlign: "center", lineHeight: 0.95, letterSpacing: -3, marginTop: 10 }}>
           {RANKING.title}<br /><span style={{ color: GOLD }}>{RANKING.highlight}</span>
         </div>
@@ -76,7 +76,7 @@ export const RankingVideo: React.FC = () => {
 
       {/* Compact header during reveals */}
       <div style={{ position: "absolute", top: 110, left: 0, right: 0, textAlign: "center", opacity: headerIn }}>
-        <div style={{ fontSize: 30, letterSpacing: 6, color: GOLD, fontWeight: 800 }}>TOP 10</div>
+        <div style={{ fontSize: 30, letterSpacing: 6, color: GOLD, fontWeight: 800 }}>{RANKING.kicker}</div>
         <div style={{ fontSize: 58, fontWeight: 900, color: "#fff", letterSpacing: -1 }}>
           {RANKING.title} {RANKING.highlight}
         </div>
@@ -97,6 +97,11 @@ export const RankingVideo: React.FC = () => {
       {/* source watermark */}
       <div style={{ position: "absolute", bottom: 24, left: 0, right: 0, textAlign: "center", fontSize: 22, color: "rgba(255,255,255,0.4)" }}>
         {RANKING.source}
+      </div>
+
+      {/* channel watermark */}
+      <div style={{ position: "absolute", top: 56, right: 46, fontSize: 32, fontWeight: 800, color: "rgba(255,255,255,0.85)", textShadow: "0 2px 10px rgba(0,0,0,0.9)" }}>
+        {RANKING.handle}
       </div>
     </AbsoluteFill>
   );
