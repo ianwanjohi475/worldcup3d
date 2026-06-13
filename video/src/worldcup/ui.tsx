@@ -2,7 +2,6 @@ import React from "react";
 import {
   AbsoluteFill,
   interpolate,
-  random,
   spring,
   useCurrentFrame,
   useVideoConfig,
