@@ -1,20 +1,26 @@
-// 37s suspense/countdown soundtrack for the ranking engine.
-// Ascending bell on each reveal, building tension, with a triumphant climax on #1.
+// Suspense/countdown soundtrack for the ranking engine.
+// Timing is computed from ITEMS so it matches any episode length.
 //   node scripts/make-ranking-soundtrack.mjs
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 
 const SR = 44100;
-const DUR = 37;
+const FPS = 30;
+const INTRO = 90, PER = 88, OUTRO = 132;
+const ITEMS = 8; // set to your episode's item count
+
+const totalFrames = INTRO + ITEMS * PER + OUTRO;
+const DUR = Math.ceil(totalFrames / FPS) + 1;
 const N = SR * DUR;
 const buf = new Float64Array(N);
 const idx = (t) => Math.floor(t * SR);
 const add = (i, v) => { if (i >= 0 && i < N) buf[i] += v; };
 
-// reveal times (s) — match RankingVideo (INTRO 90f, PER_REVEAL 88f @30fps)
-const REVEALS = [3.0, 5.93, 8.87, 11.8, 14.73, 17.67, 20.6, 23.53, 26.47, 29.4];
+// reveal times (reveal order: last rank first ... rank #1 last)
+const REVEALS = [];
+for (let k = 0; k < ITEMS; k++) REVEALS.push((INTRO + k * PER) / FPS);
 const CLIMAX = REVEALS[REVEALS.length - 1];
-const bellNotes = [330, 392, 440, 494, 587, 659, 740, 880, 988, 1175];
+const bellNotes = REVEALS.map((_, k) => 330 * Math.pow(1.14, k)); // ascending anticipation
 
 function kick(t0, gain = 0.9) {
   for (let i = idx(t0); i < idx(t0 + 0.3); i++) {
@@ -58,33 +64,19 @@ function cymbal(t0, gain = 0.4) {
   }
 }
 
-// tension pad that rises through the countdown
 pad([110, 164.81], 0, CLIMAX + 0.2, 0.28);
 pad([146.83, 220], CLIMAX * 0.5, CLIMAX + 0.2, 0.2);
-
-// steady pulse building momentum
-for (let t = 3.0; t < CLIMAX; t += 0.5) {
-  const inten = 0.4 + 0.5 * (t / CLIMAX);
-  kick(t, 0.7 * inten);
-}
-
-// each reveal: whoosh + bell + soft kick (ascending pitch)
+for (let t = 3.0; t < CLIMAX; t += 0.5) kick(t, 0.7 * (0.4 + 0.5 * (t / CLIMAX)));
 REVEALS.forEach((t, k) => {
-  if (k < REVEALS.length - 1) {
-    whoosh(t, 0.4);
-    bell(t, bellNotes[k], 0.5);
-    kick(t, 0.8);
-  }
+  if (k < REVEALS.length - 1) { whoosh(t, 0.4); bell(t, bellNotes[k], 0.5); kick(t, 0.8); }
 });
-
-// #1 climax — big hit + triumphant major chord + cymbal
+// #1 climax
 kick(CLIMAX, 1.3);
 cymbal(CLIMAX, 0.5);
 whoosh(CLIMAX, 0.6, 0.7);
-pad([261.63, 329.63, 392.0, 523.25], CLIMAX, DUR, 0.5); // C major, uplifting outro
+pad([261.63, 329.63, 392.0, 523.25], CLIMAX, DUR, 0.5);
 bell(CLIMAX, 1046.5, 0.6);
 
-// normalize + soft clip
 let peak = 0;
 for (let i = 0; i < N; i++) peak = Math.max(peak, Math.abs(buf[i]));
 const norm = peak > 0 ? 0.85 / peak : 1;
@@ -100,4 +92,4 @@ header.write("data", 36); header.writeUInt32LE(dataSize, 40);
 const out = "public/ranking-soundtrack.wav";
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, Buffer.concat([header, pcm]));
-console.log(`Wrote ${out} (${(dataSize / 1024 / 1024).toFixed(2)} MB, ${DUR}s)`);
+console.log(`Wrote ${out} (${(dataSize / 1024 / 1024).toFixed(2)} MB, ${DUR}s, ${ITEMS} items)`);
