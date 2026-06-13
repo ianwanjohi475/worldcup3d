@@ -5,7 +5,6 @@ import {
   interpolate,
   staticFile,
   useCurrentFrame,
-  useVideoConfig,
 } from "remotion";
 import {
   linearTiming,
@@ -117,7 +116,6 @@ const SceneHunger: React.FC = () => (
 // 5 — THE VERDICT ------------------------------------------------------------
 const Bullet: React.FC<{ text: string; delay: number }> = ({ text, delay }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
   const p = interpolate(frame - delay, [0, 10], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
